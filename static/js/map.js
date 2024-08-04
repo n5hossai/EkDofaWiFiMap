@@ -24,11 +24,43 @@ function searchLocation(query) {
         .catch(error => console.error('Error:', error));
 }
 
+function getLiveLocation() {
+    alert("Getting live location..."); // Add this alert for debugging
+    console.log("getLiveLocation function called");
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            map.setView([lat, lon], 13);
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup("You are here")
+                .openPopup();
+        }, function(error) {
+            alert("Error getting location: " + error.message);
+        });
+    } else {
+        alert("Geolocation is not supported by your browser");
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     initMap();
     
-    document.getElementById('search-button').addEventListener('click', function() {
-        const query = document.getElementById('search-input').value;
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+
+    function performSearch() {
+        const query = searchInput.value;
         searchLocation(query);
+    }
+    
+    searchButton.addEventListener('click', performSearch);
+
+    searchInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            performSearch();
+        }
     });
+
+    document.getElementById('live-location-button').addEventListener('click', getLiveLocation);
 });

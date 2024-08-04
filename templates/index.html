@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
 </head>
 <body>
-    <div id="search-container" style="position: absolute; top: 10px; left: 10px; z-index: 1000;">
+    <div id="search-container">
         <input type="text" id="search-input" placeholder="Search location">
         <button id="search-button">Search</button>
+        <button id="live-location-button" title="Get Live Location">📍</button>
     </div>
     <div id="map"></div>
     

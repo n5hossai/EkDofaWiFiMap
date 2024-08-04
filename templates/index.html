@@ -8,6 +8,43 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
 </head>
 <body>
+    <div id="addHotspotControls">
+        <button id="addWifiHotspotBtn">Add WiFi Hotspot</button>
+        <button id="addReliefHotspotBtn">Add Relief Hotspot</button>
+    </div>
+    
+    <div id="addWifiHotspotForm" style="display: none;">
+        <h3>Add WiFi Hotspot</h3>
+        <form id="wifiHotspotForm">
+            <input type="text" id="wifiLat" placeholder="Latitude" required>
+            <input type="text" id="wifiLon" placeholder="Longitude" required>
+            <button type="button" id="wifiGetLocation">Get Current Location</button>
+            <input type="text" id="wifiNumber" placeholder="Number (optional)">
+            <input type="text" id="wifiSSID" placeholder="WiFi Name" required>
+            <input type="text" id="wifiPassword" placeholder="WiFi Password" required>
+            <input type="text" id="wifiMessage" placeholder="Message (optional)">
+            <button type="submit">Submit WiFi Hotspot</button>
+        </form>
+    </div>
+    
+    <div id="addReliefHotspotForm" style="display: none;">
+        <h3>Add Relief Hotspot</h3>
+        <form id="reliefHotspotForm">
+            <input type="text" id="reliefLat" placeholder="Latitude" required>
+            <input type="text" id="reliefLon" placeholder="Longitude" required>
+            <button type="button" id="reliefGetLocation">Get Current Location</button>
+            <select id="reliefType" required>
+                <option value="">Select Type</option>
+                <option value="firstAid">First Aid</option>
+                <option value="water">Water</option>
+                <option value="overNightStayLocation">Location to Stay</option>
+            </select>
+            <input type="text" id="reliefContactNumber" placeholder="Contact Number (optional)">
+            <input type="text" id="reliefMessage" placeholder="Message (optional)">
+            <button type="submit">Submit Relief Hotspot</button>
+        </form>
+    </div>
+    
     <div id="search-container">
         <input type="text" id="search-input" placeholder="Search location">
         <button id="search-button">Search</button>

@@ -24,19 +24,15 @@ function addHotspotRelief(hotspot) {
 }
 
 function loadHotspots() {
-    fetch('/static/data/wifiHotspots.json')
-        .then(response => response.json())
-        .then(wifiHotspots => {
-            wifiHotspots.forEach(addHotspotWifi);
-        })
-        .catch(error => console.error('Error loading WiFi hotspots:', error));
-
-    fetch('/static/data/reliefHotspots.json')
-        .then(response => response.json())
-        .then(reliefHotspots => {
-            reliefHotspots.forEach(addHotspotRelief);
-        })
-        .catch(error => console.error('Error loading relief hotspots:', error));
+    Promise.all([
+        fetch('/static/data/wifiHotspots.json').then(response => response.json()),
+        fetch('/static/data/reliefHotspots.json').then(response => response.json())
+    ])
+    .then(([wifiHotspots, reliefHotspots]) => {
+        wifiHotspots.forEach(addHotspotWifi);
+        reliefHotspots.forEach(addHotspotRelief);
+    })
+    .catch(error => console.error('Error loading hotspots:', error));
 }
 
 function searchLocation(query) {
@@ -85,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchLocation(query);
     }
     
-    searchButton.addEventListener('click', performSearch);
+    searchButton.addEventListener('click', performSearch)
 
     searchInput.addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
@@ -95,3 +91,135 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('live-location-button').addEventListener('click', getLiveLocation);
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const addWifiHotspotBtn = document.getElementById('addWifiHotspotBtn');
+    const addReliefHotspotBtn = document.getElementById('addReliefHotspotBtn');
+    const wifiForm = document.getElementById('addWifiHotspotForm');
+    const reliefForm = document.getElementById('addReliefHotspotForm');
+    const wifiGetLocationBtn = document.getElementById('wifiGetLocation');
+    const reliefGetLocationBtn = document.getElementById('reliefGetLocation');
+
+    addWifiHotspotBtn.addEventListener('click', () => {
+        wifiForm.style.display = 'block';
+        reliefForm.style.display = 'none';
+    });
+
+    addReliefHotspotBtn.addEventListener('click', () => {
+        reliefForm.style.display = 'block';
+        wifiForm.style.display = 'none';
+    });
+
+    wifiGetLocationBtn.addEventListener('click', () => getLocation('wifi'));
+    reliefGetLocationBtn.addEventListener('click', () => getLocation('relief'));
+
+    document.getElementById('wifiHotspotForm').addEventListener('submit', submitWifiHotspot);
+    document.getElementById('reliefHotspotForm').addEventListener('submit', submitReliefHotspot);
+});
+
+function getLocation(type) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            document.getElementById(`${type}Lat`).value = position.coords.latitude.toFixed(6);
+            document.getElementById(`${type}Lon`).value = position.coords.longitude.toFixed(6);
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function submitWifiHotspot(event) {
+    event.preventDefault();
+    const lat = document.getElementById('wifiLat').value;
+    const lon = document.getElementById('wifiLon').value;
+    
+    if (!validateCoordinates(lat, lon)) {
+        return;
+    }
+
+    const hotspot = {
+        id: Date.now(),
+        location: {
+            latitude: parseFloat(lat),
+            longitude: parseFloat(lon)
+        },
+        wifiCredential: {
+            ssid: document.getElementById('wifiSSID').value,
+            password: document.getElementById('wifiPassword').value
+        },
+        message: document.getElementById('wifiMessage').value || null
+    };
+    
+    const number = document.getElementById('wifiNumber').value;
+    if (number) hotspot.number = number;
+
+    sendHotspotData('/api/hotspots/wifi', hotspot);
+}
+
+function submitReliefHotspot(event) {
+    event.preventDefault();
+    const lat = document.getElementById('reliefLat').value;
+    const lon = document.getElementById('reliefLon').value;
+    
+    if (!validateCoordinates(lat, lon)) {
+        return;
+    }
+
+    const hotspot = {
+        id: Date.now(),
+        type: document.getElementById('reliefType').value,
+        location: {
+            latitude: parseFloat(lat),
+            longitude: parseFloat(lon)
+        },
+        contactNumber: document.getElementById('reliefContactNumber').value || null,
+        message: document.getElementById('reliefMessage').value || null
+    };
+
+    sendHotspotData('/api/hotspots/relief', hotspot);
+}
+
+function sendHotspotData(url, data) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Clear existing markers
+        map.eachLayer((layer) => {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
+        });
+        // Reload all hotspots
+        loadHotspots();
+        // Center the map on the new hotspot
+        map.setView([data.location.latitude, data.location.longitude], 13);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+function isValidCoordinate(value) {
+    return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
+function validateCoordinates(lat, lon) {
+    if (!isValidCoordinate(lat) || !isValidCoordinate(lon)) {
+        alert("Please enter valid latitude and longitude values.");
+        return false;
+    }
+    const latValue = parseFloat(lat);
+    const lonValue = parseFloat(lon);
+    if (latValue < -90 || latValue > 90 || lonValue < -180 || lonValue > 180) {
+        alert("Latitude must be between -90 and 90, and longitude must be between -180 and 180.");
+        return false;
+    }
+    return true;
+}

@@ -1,0 +1,16 @@
+[
+    {
+      "id": 1,
+      "type": "firstAid",
+      "location": { "latitude": 23.7276, "longitude": 90.3968 },
+      "contactNumber": "+8801712345678",
+      "message": "First aid available at Dhanmondi"
+    },
+    {
+      "id": 2,
+      "type": "water",
+      "location": { "latitude": 23.7525, "longitude": 90.3893 },
+      "contactNumber": "+8801898765432",
+      "message": "Clean water distribution in Mohakhali"
+    }
+  ]

@@ -1,8 +1,8 @@
+import json
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import httpx
-from data_store import get_hotspots, add_wifi_hotspot, add_relief_hotspot
 
 app = FastAPI()
 
@@ -22,16 +22,22 @@ async def search(q: str):
             return {"lat": float(data[0]["lat"]), "lon": float(data[0]["lon"])}
         return {"error": "Location not found"}
 
-@app.get("/hotspots")
-def get_all_hotspots():
-    return get_hotspots()
-
-@app.post("/hotspots/wifi")
-async def create_wifi_hotspot(hotspot: dict):
-    add_wifi_hotspot(hotspot)
+@app.post("/api/hotspots/wifi")
+async def add_wifi_hotspot(hotspot: dict):
+    with open('static/data/wifiHotspots.json', 'r+') as f:
+        data = json.load(f)
+        data.append(hotspot)
+        f.seek(0)
+        json.dump(data, f, indent=2)
+        f.truncate()
     return {"message": "WiFi hotspot added successfully"}
 
-@app.post("/hotspots/relief")
-async def create_relief_hotspot(hotspot: dict):
-    add_relief_hotspot(hotspot)
+@app.post("/api/hotspots/relief")
+async def add_relief_hotspot(hotspot: dict):
+    with open('static/data/reliefHotspots.json', 'r+') as f:
+        data = json.load(f)
+        data.append(hotspot)
+        f.seek(0)
+        json.dump(data, f, indent=2)
+        f.truncate()
     return {"message": "Relief hotspot added successfully"}

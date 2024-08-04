@@ -13,12 +13,44 @@ body, html {
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 5px 10px;
+    padding: 8px 12px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin-left: 5px;
     cursor: pointer;
     border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+#live-location-button:hover {
+    background-color: #45a049;
+}
+
+#search-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+#search-input {
+    padding: 8px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#search-button {
+    padding: 8px 12px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#search-button:hover {
+    background-color: #007B9A;
 }

@@ -46,9 +46,20 @@ function getLiveLocation() {
 document.addEventListener('DOMContentLoaded', function() {
     initMap();
     
-    document.getElementById('search-button').addEventListener('click', function() {
-        const query = document.getElementById('search-input').value;
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+
+    function performSearch() {
+        const query = searchInput.value;
         searchLocation(query);
+    }
+    
+    searchButton.addEventListener('click', performSearch);
+
+    searchInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            performSearch();
+        }
     });
 
     document.getElementById('live-location-button').addEventListener('click', getLiveLocation);

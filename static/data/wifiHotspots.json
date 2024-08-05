@@ -34,5 +34,29 @@
       "password": "1"
     },
     "message": "test1"
+  },
+  {
+    "id": 1722835578404,
+    "location": {
+      "latitude": 24.301421,
+      "longitude": 89.824219
+    },
+    "wifiCredential": {
+      "ssid": "a",
+      "password": "a"
+    },
+    "message": "buu"
+  },
+  {
+    "id": 1722835665433,
+    "location": {
+      "latitude": 24.251347,
+      "longitude": 88.956299
+    },
+    "wifiCredential": {
+      "ssid": "bla1",
+      "password": "1"
+    },
+    "message": "hey abd sh"
   }
 ]

@@ -14,17 +14,37 @@ function initMap() {
 }
 
 
+// In map.js
+
+// Add these lines to define custom marker icons with Font Awesome
+const wifiIcon = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fa fa-map-marker" style="font-size:24px;color:orange"></i>', // change color to yellow for WiFi
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
+const reliefIcon = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fa fa-map-marker" style="font-size:24px;color:green"></i>', // change color to green for Relief
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
 function addHotspotWifi(hotspot) {
-    L.marker([hotspot.location.latitude, hotspot.location.longitude])
+    L.marker([hotspot.location.latitude, hotspot.location.longitude], { icon: wifiIcon })
         .addTo(map)
         .bindPopup(`<b>WiFi Hotspot</b><br>SSID: ${hotspot.wifiCredential.ssid}<br>Password: ${hotspot.wifiCredential.password}<br>Message: ${hotspot.message}`);
 }
 
 function addHotspotRelief(hotspot) {
-    L.marker([hotspot.location.latitude, hotspot.location.longitude])
+    L.marker([hotspot.location.latitude, hotspot.location.longitude], { icon: reliefIcon })
         .addTo(map)
         .bindPopup(`<b>${hotspot.type} Relief</b><br>Contact: ${hotspot.contactNumber}<br>Message: ${hotspot.message}`);
 }
+
 
 function loadHotspots() {
     Promise.all([

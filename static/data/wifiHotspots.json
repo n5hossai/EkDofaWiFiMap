@@ -189,5 +189,41 @@
       "password": "1"
     },
     "message": "1"
+  },
+  {
+    "id": 1722828255125,
+    "location": {
+      "latitude": 23.7641,
+      "longitude": 32.7336
+    },
+    "wifiCredential": {
+      "ssid": "bla1",
+      "password": "1"
+    },
+    "message": "hey abd sh"
+  },
+  {
+    "id": 1722828396264,
+    "location": {
+      "latitude": 23.7641,
+      "longitude": 32.7336
+    },
+    "wifiCredential": {
+      "ssid": "bla1",
+      "password": "1"
+    },
+    "message": "hey abd sh"
+  },
+  {
+    "id": 1722828408610,
+    "location": {
+      "latitude": 23.7641,
+      "longitude": 90.3578
+    },
+    "wifiCredential": {
+      "ssid": "bla1",
+      "password": "1"
+    },
+    "message": "hey abd sh"
   }
 ]

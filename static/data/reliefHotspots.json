@@ -218,5 +218,15 @@
     },
     "contactNumber": "12345",
     "message": "hey sh abd"
+  },
+  {
+    "id": 1722828382908,
+    "type": "water",
+    "location": {
+      "latitude": 23.7276,
+      "longitude": 90.1
+    },
+    "contactNumber": "12345",
+    "message": "123"
   }
 ]

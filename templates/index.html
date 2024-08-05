@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Map Interface</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/map.js"></script>
 </head>
+
 <body>
     <div id="addHotspotControls">
         <button id="addWifiHotspotBtn">Add WiFi Hotspot</button>
         <button id="addReliefHotspotBtn">Add Relief Hotspot</button>
     </div>
-    
+
     <div id="addWifiHotspotForm" style="display: none;">
         <h3>Add WiFi Hotspot</h3>
         <form id="wifiHotspotForm">
@@ -26,7 +28,7 @@
             <button type="submit">Submit WiFi Hotspot</button>
         </form>
     </div>
-    
+
     <div id="addReliefHotspotForm" style="display: none;">
         <h3>Add Relief Hotspot</h3>
         <form id="reliefHotspotForm">
@@ -44,15 +46,16 @@
             <button type="submit">Submit Relief Hotspot</button>
         </form>
     </div>
-    
+
     <div id="search-container">
         <input type="text" id="search-input" placeholder="Search location">
         <button id="search-button">Search</button>
         <button id="live-location-button" title="Get Live Location">📍</button>
     </div>
     <div id="map"></div>
-    
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="{{ url_for('static', path='/js/map.js') }}"></script>
 </body>
+
 </html>

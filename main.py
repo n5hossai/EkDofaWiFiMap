@@ -30,7 +30,10 @@ async def add_wifi_hotspot(hotspot: dict):
         f.seek(0)
         json.dump(data, f, indent=2)
         f.truncate()
-    return {"message": "WiFi hotspot added successfully"}
+    return {
+        "message": "WiFi hotspot added successfully",
+        "location": hotspot["location"]  # Return the location as part of the response
+    }
 
 @app.post("/api/hotspots/relief")
 async def add_relief_hotspot(hotspot: dict):
@@ -40,4 +43,7 @@ async def add_relief_hotspot(hotspot: dict):
         f.seek(0)
         json.dump(data, f, indent=2)
         f.truncate()
-    return {"message": "Relief hotspot added successfully"}
+    return {
+        "message": "Relief hotspot added successfully",
+        "location": hotspot["location"]  # Return the location as part of the response
+    }

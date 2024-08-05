@@ -1,13 +1,14 @@
 let map;
 
 function initMap() {
-    // Set the initial view to Bangladesh
-    map = L.map('map').setView([23.685, 90.3563], 6); // Centered on Bangladesh
+    map = L.map('map').setView([23.685, 90.3563], 12);
 
-    // Use a lighter tile layer
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        updateWhenIdle: true,
+        updateWhenZooming: false
+
     }).addTo(map);
 
     // Set bounds for Bangladesh
@@ -23,17 +24,37 @@ function initMap() {
 }
 
 
+// In map.js
+
+// Add these lines to define custom marker icons with Font Awesome
+const wifiIcon = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fa fa-map-marker" style="font-size:24px;color:orange"></i>', // change color to yellow for WiFi
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
+const reliefIcon = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fa fa-map-marker" style="font-size:24px;color:green"></i>', // change color to green for Relief
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
 function addHotspotWifi(hotspot) {
-    L.marker([hotspot.location.latitude, hotspot.location.longitude])
+    L.marker([hotspot.location.latitude, hotspot.location.longitude], { icon: wifiIcon })
         .addTo(map)
         .bindPopup(`<b>WiFi Hotspot</b><br>SSID: ${hotspot.wifiCredential.ssid}<br>Password: ${hotspot.wifiCredential.password}<br>Message: ${hotspot.message}`);
 }
 
 function addHotspotRelief(hotspot) {
-    L.marker([hotspot.location.latitude, hotspot.location.longitude])
+    L.marker([hotspot.location.latitude, hotspot.location.longitude], { icon: reliefIcon })
         .addTo(map)
         .bindPopup(`<b>${hotspot.type} Relief</b><br>Contact: ${hotspot.contactNumber}<br>Message: ${hotspot.message}`);
 }
+
 
 function loadHotspots() {
     Promise.all([
@@ -201,7 +222,12 @@ function sendHotspotData(url, data) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
+        console.log('Success:', data); // Log the entire response
+        if (data.location) {
+            map.setView([data.location.latitude, data.location.longitude], 13);
+        } else {
+            console.error('Location data is missing:', data);
+        }
         // Clear existing markers
         map.eachLayer((layer) => {
             if (layer instanceof L.Marker) {
@@ -210,11 +236,14 @@ function sendHotspotData(url, data) {
         });
         // Reload all hotspots
         loadHotspots();
-        // Center the map on the new hotspot
-        map.setView([data.location.latitude, data.location.longitude], 13);
     })
     .catch((error) => {
         console.error('Error:', error);
+        if (data && data.location) {
+            console.log('Hotspot error:', data.location.latitude);
+        } else {
+            console.error('Location data is missing in error:', data);
+        }
     });
 }
 

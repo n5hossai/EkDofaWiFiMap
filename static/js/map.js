@@ -215,7 +215,6 @@ function sendHotspotData(url, data) {
         console.log('Success:', data); // Log the entire response
         if (data.location) {
             map.setView([data.location.latitude, data.location.longitude], 13);
-            console.log('Hotspot data:', data.location.latitude);
         } else {
             console.error('Location data is missing:', data);
         }

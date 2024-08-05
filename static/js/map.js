@@ -236,6 +236,7 @@ function sendHotspotData(url, data) {
         });
         // Reload all hotspots
         loadHotspots();
+        showAlertAndReload(url);
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -263,4 +264,17 @@ function validateCoordinates(lat, lon) {
         return false;
     }
     return true;
+}
+
+function showAlertAndReload(path) {
+    let message = "Data added successfully!";
+    if (path.endsWith('wifi')) {
+        message = "WiFi Data added successfully!";
+    } else if (path.endsWith('relief')) {
+        message = "Relief Data added successfully!";
+    }
+    alert(message);
+    setTimeout(function() {
+        location.reload();
+    }, 100);
 }

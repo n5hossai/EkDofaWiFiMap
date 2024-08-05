@@ -73,5 +73,18 @@
     },
     "message": "hey abd sh",
     "number": "123345"
+  },
+  {
+    "id": 1722822648754,
+    "location": {
+      "latitude": 23.7328,
+      "longitude": 90.3752
+    },
+    "wifiCredential": {
+      "ssid": "bgb",
+      "password": "123456"
+    },
+    "message": "111",
+    "number": "11111"
   }
 ]

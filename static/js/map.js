@@ -192,7 +192,13 @@ function sendHotspotData(url, data) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
+        console.log('Success:', data); // Log the entire response
+        if (data.location) {
+            map.setView([data.location.latitude, data.location.longitude], 13);
+            console.log('Hotspot data:', data.location.latitude);
+        } else {
+            console.error('Location data is missing:', data);
+        }
         // Clear existing markers
         map.eachLayer((layer) => {
             if (layer instanceof L.Marker) {
@@ -201,11 +207,14 @@ function sendHotspotData(url, data) {
         });
         // Reload all hotspots
         loadHotspots();
-        // Center the map on the new hotspot
-        map.setView([data.location.latitude, data.location.longitude], 13);
     })
     .catch((error) => {
         console.error('Error:', error);
+        if (data && data.location) {
+            console.log('Hotspot error:', data.location.latitude);
+        } else {
+            console.error('Location data is missing in error:', data);
+        }
     });
 }
 

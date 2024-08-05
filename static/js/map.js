@@ -8,7 +8,17 @@ function initMap() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         updateWhenIdle: true,
         updateWhenZooming: false
+
     }).addTo(map);
+
+    // Set bounds for Bangladesh
+    const bounds = [
+        [20.0, 88.0], // Southwest corner
+        [27.0, 93.0]  // Northeast corner
+    ];
+
+    map.setMaxBounds(bounds);
+    map.fitBounds(bounds);
 
     loadHotspots();
 }

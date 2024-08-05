@@ -13,6 +13,13 @@ templates = Jinja2Templates(directory="templates")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+# Add a middleware to set Content-Security-Policy header
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
+    return response
+
 @app.get("/search")
 async def search(q: str):
     async with httpx.AsyncClient() as client:

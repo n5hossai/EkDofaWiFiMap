@@ -136,11 +136,23 @@ document.addEventListener('DOMContentLoaded', function() {
     addWifiHotspotBtn.addEventListener('click', () => {
         wifiForm.style.display = 'block';
         reliefForm.style.display = 'none';
+        map.getContainer().classList.add('pin-cursor');
+        map.once('click', (e) => {
+            document.getElementById('wifiLat').value = e.latlng.lat.toFixed(6);
+            document.getElementById('wifiLon').value = e.latlng.lng.toFixed(6);
+            map.getContainer().classList.remove('pin-cursor');
+        });
     });
 
     addReliefHotspotBtn.addEventListener('click', () => {
         reliefForm.style.display = 'block';
         wifiForm.style.display = 'none';
+        map.getContainer().classList.add('pin-cursor');
+        map.once('click', (e) => {
+            document.getElementById('reliefLat').value = e.latlng.lat.toFixed(6);
+            document.getElementById('reliefLon').value = e.latlng.lng.toFixed(6);
+            map.getContainer().classList.remove('pin-cursor');
+        });
     });
 
     wifiGetLocationBtn.addEventListener('click', () => getLocation('wifi'));

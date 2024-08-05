@@ -38,5 +38,25 @@
     },
     "contactNumber": null,
     "message": "test2"
+  },
+  {
+    "id": 1722835607708,
+    "type": "overNightStayLocation",
+    "location": {
+      "latitude": 23.847809,
+      "longitude": 90.255432
+    },
+    "contactNumber": null,
+    "message": null
+  },
+  {
+    "id": 1722835675183,
+    "type": "water",
+    "location": {
+      "latitude": 25.912968,
+      "longitude": 88.967285
+    },
+    "contactNumber": null,
+    "message": null
   }
 ]

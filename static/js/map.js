@@ -43,6 +43,14 @@ const reliefIcon = L.divIcon({
     popupAnchor: [0, -32]
 });
 
+const starIcon = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fa fa-star" style="font-size:24px;color:red"></i>', // Red star icon
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
 function addHotspotWifi(hotspot) {
     L.marker([hotspot.location.latitude, hotspot.location.longitude], { icon: wifiIcon })
         .addTo(map)
@@ -125,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('live-location-button').addEventListener('click', getLiveLocation);
 });
 
+let isAddingHotspot = false; // Flag to track if a hotspot is being added
 document.addEventListener('DOMContentLoaded', function() {
     const addWifiHotspotBtn = document.getElementById('addWifiHotspotBtn');
     const addReliefHotspotBtn = document.getElementById('addReliefHotspotBtn');
@@ -134,23 +143,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const reliefGetLocationBtn = document.getElementById('reliefGetLocation');
 
     addWifiHotspotBtn.addEventListener('click', () => {
+        if (isAddingHotspot) {
+            alert("Please reload the page to add another hotspot.");
+            return;
+        }
+        isAddingHotspot = true; // Set the flag
         wifiForm.style.display = 'block';
         reliefForm.style.display = 'none';
         map.getContainer().classList.add('pin-cursor');
         map.once('click', (e) => {
             document.getElementById('wifiLat').value = e.latlng.lat.toFixed(6);
             document.getElementById('wifiLon').value = e.latlng.lng.toFixed(6);
+            L.marker([e.latlng.lat, e.latlng.lng], { icon: starIcon }).addTo(map); // Add star icon
             map.getContainer().classList.remove('pin-cursor');
         });
     });
-
+    
     addReliefHotspotBtn.addEventListener('click', () => {
+        if (isAddingHotspot) {
+            alert("Please reload the page to add another hotspot.");
+            return;
+        }
+        isAddingHotspot = true; // Set the flag
         reliefForm.style.display = 'block';
         wifiForm.style.display = 'none';
         map.getContainer().classList.add('pin-cursor');
         map.once('click', (e) => {
             document.getElementById('reliefLat').value = e.latlng.lat.toFixed(6);
             document.getElementById('reliefLon').value = e.latlng.lng.toFixed(6);
+            L.marker([e.latlng.lat, e.latlng.lng], { icon: starIcon }).addTo(map); // Add star icon
             map.getContainer().classList.remove('pin-cursor');
         });
     });
@@ -158,8 +179,15 @@ document.addEventListener('DOMContentLoaded', function() {
     wifiGetLocationBtn.addEventListener('click', () => getLocation('wifi'));
     reliefGetLocationBtn.addEventListener('click', () => getLocation('relief'));
 
-    document.getElementById('wifiHotspotForm').addEventListener('submit', submitWifiHotspot);
-    document.getElementById('reliefHotspotForm').addEventListener('submit', submitReliefHotspot);
+    document.getElementById('wifiHotspotForm').addEventListener('submit', (event) => {
+        submitWifiHotspot(event);
+        isAddingHotspot = false; // Reset the flag after submission
+    });
+
+    document.getElementById('reliefHotspotForm').addEventListener('submit', (event) => {
+        submitReliefHotspot(event);
+        isAddingHotspot = false; // Reset the flag after submission
+    });
 });
 
 function getLocation(type) {
@@ -177,7 +205,7 @@ function submitWifiHotspot(event) {
     event.preventDefault();
     const lat = document.getElementById('wifiLat').value;
     const lon = document.getElementById('wifiLon').value;
-    
+
     if (!validateCoordinates(lat, lon)) {
         return;
     }
@@ -194,18 +222,26 @@ function submitWifiHotspot(event) {
         },
         message: document.getElementById('wifiMessage').value || null
     };
-    
+
     const number = document.getElementById('wifiNumber').value;
     if (number) hotspot.number = number;
 
-    sendHotspotData('/api/hotspots/wifi', hotspot);
+    sendHotspotData('/api/hotspots/wifi', hotspot).then(() => {
+        // Clear existing markers
+        map.eachLayer((layer) => {
+            if (layer instanceof L.Marker && layer.options.icon === starIcon) {
+                map.removeLayer(layer); // Remove the star icon
+            }
+        });
+        loadHotspots(); // Reload hotspots
+    });
 }
 
 function submitReliefHotspot(event) {
     event.preventDefault();
     const lat = document.getElementById('reliefLat').value;
     const lon = document.getElementById('reliefLon').value;
-    
+
     if (!validateCoordinates(lat, lon)) {
         return;
     }
@@ -221,7 +257,15 @@ function submitReliefHotspot(event) {
         message: document.getElementById('reliefMessage').value || null
     };
 
-    sendHotspotData('/api/hotspots/relief', hotspot);
+    sendHotspotData('/api/hotspots/relief', hotspot).then(() => {
+        // Clear existing markers
+        map.eachLayer((layer) => {
+            if (layer instanceof L.Marker && layer.options.icon === starIcon) {
+                map.removeLayer(layer); // Remove the star icon
+            }
+        });
+        loadHotspots(); // Reload hotspots
+    });
 }
 
 function sendHotspotData(url, data) {
